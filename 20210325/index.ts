@@ -36,7 +36,38 @@ console.log(Hello.prototype.age) // 18
 let hello = new Hello();
 console.log(hello.age) // 18
 // 方法装饰器
-// 啊还没搞懂。
+// 1：方法装饰器被应用到方法的属性描述符上，可以用来监视、修改、替换方法的定义
+// 2：方法装饰器会运行时传入3个参数
+    // 1.对于静态成员来说是类的构造函数，对于实例成员来说是类的原型对象
+    // 2.成员的名字
+    // 3.成员的属性描述符
+function get(params:any) {
+    return function(targer:any, methodName:any, desc:any) {
+        var oldMethod = desc.value; // 1.保存原方法体
+        // 2.重新定义方法体
+        desc.value = function (...args:any[]) {
+            // 3.把传入的数组元素转为字符串
+            let newArgs = args.map(item => {
+                return String(item)
+            });
+            // 4.执行原来的方法体
+            oldMethod.apply(this, newArgs);
+            // 等于
+            // oldMethod.call(this, ...newArgs);
+        }
+
+    }
+}
+class HttpClient {
+    constructor() {}
+    @get("https://github.com/xiafengaha");
+    getData(...args:any[]){
+
+    }
+}
+var http = new HttpClient();
+http.getData(1,2,true) // ["1","2","true"]
+
 //装饰器执行顺序
 // 1:当有多个参数装饰器时，从最后一个向前执行
 // 2:方法和方法参数中参数装饰器先执行
