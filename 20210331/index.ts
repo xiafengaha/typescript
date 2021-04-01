@@ -23,3 +23,20 @@ function getFun():initData | handleData {
 }
 console.log(getFun().getData()) // ok
 console.log(getFun().create()) // error
+// 索引类型
+// 索引类型查询操作符（keyof）
+// 索引访问操作符(T[K])
+public initData() {
+    interface P {
+        name: string;
+        age: number;
+    };
+    const people: P = {
+        age: 18,
+        name: "xiaxiaofeng"
+    };
+    const fn: <P,T extends keyof P>(p: P, t: T[]) => Array<P[T]> = (p, t) => {
+        return t.map(item => p[item])
+    }
+    const res = fn(people, ["age"]);
+}
